@@ -33,29 +33,19 @@ def not_author_client(not_author):
 
 @pytest.fixture
 def news():
-    note = News.objects.create(
+    return News.objects.create(
         title='Заголовок',
         text='Текст заметки',
     )
-    return note
 
 
 @pytest.fixture
 def comment(author, news):
-    comment = Comment.objects.create(
+    return Comment.objects.create(
         news=news,
         author=author,
         text='Текст комментария'
     )
-    return comment
-
-
-@pytest.fixture
-def form_data():
-    return {
-        'title': 'Новый заголовок',
-        'text': 'Новый текст',
-    }
 
 
 @pytest.fixture
@@ -67,25 +57,54 @@ def form_comment():
 
 @pytest.fixture
 def create_news():
-    today = datetime.today()
-    all_news = [
-        News(
-            title=f'Новость {index}',
-            text='Просто текст.',
-            date=today - timedelta(days=index)
-        )
+    News.objects.bulk_create(News(
+        title=f'Новость {index}',
+        text='Просто текст.',
+        date=datetime.today() - timedelta(days=index)
+    )
         for index in range(settings.NEWS_COUNT_ON_HOME_PAGE + 1)
-    ]
-    return all_news
+    )
 
 
 @pytest.fixture
-def url(news):
+def news_detail(news):
     url = reverse('news:detail', args=(news.id,))
     return url
 
 
 @pytest.fixture
-def edit_url(comment):
+def news_delete(comment):
+    url = reverse('news:delete', args=(comment.id,))
+    return url
+
+
+@pytest.fixture
+def news_edit(comment):
     url = reverse('news:edit', args=(comment.id,))
     return url
+
+
+@pytest.fixture
+def news_home():
+    return reverse('news:home')
+
+
+@pytest.fixture
+def user_login():
+    return reverse('users:login')
+
+
+@pytest.fixture
+def user_logout():
+    return reverse('users:logout')
+
+
+@pytest.fixture
+def user_signup():
+    return reverse('users:signup')
+
+
+@pytest.fixture
+def comment_create(news, author):
+    for index in range(10):
+        Comment.objects.create(news=news, text=index, author=author)
