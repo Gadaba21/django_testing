@@ -18,7 +18,6 @@ def test_pages_contains_client_form(client, news_detail):
 
 
 def test_comments_order(client, news, comment_create, news_detail):
-    comment_create
     response = client.get(news_detail)
     assert 'news' in response.context
     news = response.context['news']
@@ -29,7 +28,6 @@ def test_comments_order(client, news, comment_create, news_detail):
 
 
 def test_news_order(client, create_news, news_home):
-    create_news
     response = client.get(news_home)
     object_list = response.context['object_list']
     all_dates = [news.date for news in object_list]
@@ -38,8 +36,5 @@ def test_news_order(client, create_news, news_home):
 
 
 def test_news_count(client, create_news, news_home):
-    create_news
-    response = client.get(news_home)
-    object_list = response.context['object_list']
-    news_count = object_list.count()
-    assert news_count == settings.NEWS_COUNT_ON_HOME_PAGE
+    assert client.get(news_home).context[
+        'object_list'].count() == settings.NEWS_COUNT_ON_HOME_PAGE

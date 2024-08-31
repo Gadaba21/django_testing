@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.test import Client, TestCase
 from django.urls import reverse
+
 from notes.models import Note
 
 SLUG_CONSTANCE = 'gf'
@@ -11,6 +12,9 @@ NOTES_DETAIL = reverse('notes:detail', kwargs={'slug': SLUG_CONSTANCE})
 NOTES_LIST = reverse('notes:list')
 NOTES_SUCCESS = reverse('notes:success')
 NOTES_HOME = reverse('notes:home')
+USER_LOGIN = reverse('users:login')
+USER_LOGOUT = reverse('users:logout')
+USER_SIGNUP = reverse('users:signup')
 
 
 class BaseTestCase(TestCase):
@@ -36,3 +40,6 @@ class BaseTestCase(TestCase):
         cls.note_list = NOTES_LIST
         cls.note_success = NOTES_SUCCESS
         cls.note_home = NOTES_HOME
+        cls.user_login = USER_LOGIN
+        cls.user_logout = USER_LOGOUT
+        cls.user_signup = USER_SIGNUP

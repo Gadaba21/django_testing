@@ -1,12 +1,13 @@
 from http import HTTPStatus
 
 import pytest
-from news.forms import BAD_WORDS, WARNING
-from news.models import Comment
 from pytest_django.asserts import assertFormError, assertRedirects
 
+from news.forms import BAD_WORDS, WARNING
+from news.models import Comment, News
+
+
 FORM_DATA = {
-    'title': 'Новый заголовок',
     'text': 'Новый текст',
 }
 
@@ -80,7 +81,8 @@ def test_user_cant_edit_comment_of_another_user(
 
 def test_user_cant_delete_comment_of_another_user(
         author_client,
-        news_delete
+        news_delete,
+        news
 ):
     count_comments = Comment.objects.count()
     author_client.post(news_delete)
@@ -90,9 +92,11 @@ def test_user_cant_delete_comment_of_another_user(
 
 def test_user_cant_delete_comment_of_not_another_user(
         not_author_client,
-        news_delete
+        news_delete,
+        news
 ):
     count_comments = Comment.objects.count()
     not_author_client.post(news_delete)
     comments_count = Comment.objects.count()
     assert comments_count == count_comments
+    assert News.objects.filter(id=news.id).exists()

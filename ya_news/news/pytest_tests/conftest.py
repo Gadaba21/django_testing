@@ -4,6 +4,7 @@ import pytest
 from django.conf import settings
 from django.test.client import Client
 from django.urls import reverse
+
 from news.models import Comment, News
 
 
@@ -49,39 +50,30 @@ def comment(author, news):
 
 
 @pytest.fixture
-def form_comment():
-    return {
-        'text': 'Новый текст',
-    }
-
-
-@pytest.fixture
 def create_news():
-    News.objects.bulk_create(News(
-        title=f'Новость {index}',
-        text='Просто текст.',
-        date=datetime.today() - timedelta(days=index)
-    )
+    News.objects.bulk_create(
+        News(
+            title=f'Новость {index}',
+            text='Просто текст.',
+            date=datetime.today() - timedelta(days=index)
+        )
         for index in range(settings.NEWS_COUNT_ON_HOME_PAGE + 1)
     )
 
 
 @pytest.fixture
 def news_detail(news):
-    url = reverse('news:detail', args=(news.id,))
-    return url
+    return reverse('news:detail', args=(news.id,))
 
 
 @pytest.fixture
 def news_delete(comment):
-    url = reverse('news:delete', args=(comment.id,))
-    return url
+    return reverse('news:delete', args=(comment.id,))
 
 
 @pytest.fixture
 def news_edit(comment):
-    url = reverse('news:edit', args=(comment.id,))
-    return url
+    return reverse('news:edit', args=(comment.id,))
 
 
 @pytest.fixture
